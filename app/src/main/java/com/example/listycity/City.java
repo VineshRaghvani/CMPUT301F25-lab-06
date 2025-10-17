@@ -1,60 +1,59 @@
 package com.example.listycity;
 
-/**
- * This is a class that defines a City.
- */
-public class City implements Comparable {
-    /**
-     * The name of the city
-     */
-    private String city;
+import java.util.Objects;
 
-    /**
-     * The name of the province
-     */
+/**
+ * Defines a City with a name and province.
+ */
+public class City implements Comparable<City> {
+    private String city;
     private String province;
 
     /**
-     * Constructor for City
-     * @param city
-     *      The name of the city
-     * @param province
-     *      The name of the province
+     * Constructs a City.
+     * @param city city name
+     * @param province province name
      */
-    City(String city, String province) {
+    public City(String city, String province) {
         this.city = city;
         this.province = province;
     }
 
     /**
-     * Gets the city name
-     * @return
-     *      Return the city name
+     * @return city name
      */
-    String getCityName() {
-        return this.city;
-    }
+    public String getCityName() { return this.city; }
 
     /**
-     * Gets the province name
-     * @return
-     *      Return the province name
+     * @return province name
      */
-    String getProvinceName() {
-        return this.province;
-    }
+    public String getProvinceName() { return this.province; }
 
     /**
-     * Compares this city to another city based on city name
-     * @param o
-     *      The object to be compared
-     * @return
-     *      A negative integer, zero, or a positive integer as this city
-     *      is less than, equal to, or greater than the specified city
+     * Natural order: by city name, case-insensitive.
      */
     @Override
-    public int compareTo(Object o) {
-        City city = (City) o;
-        return this.city.compareTo(city.getCityName());
+    public int compareTo(City other) {
+        return this.city.compareToIgnoreCase(other.city);
+    }
+
+    /**
+     * Logical equality: same city and province.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof City)) return false;
+        City other = (City) o;
+        return Objects.equals(city, other.city)
+                && Objects.equals(province, other.province);
+    }
+
+    /**
+     * Hash based on city and province fields.
+     */
+    @Override
+    public int hashCode() {
+        return Objects.hash(city, province);
     }
 }

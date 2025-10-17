@@ -5,34 +5,59 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * This is a class that keeps track of a list of city objects
+ * Keeps a list of City objects.
  */
 public class CityList {
-    /**
-     * List to hold city objects
-     */
-    private List<City> cities = new ArrayList<>();
+    private final List<City> cities = new ArrayList<>();
 
     /**
-     * This adds a city to the list if the city does not exist
-     * @param city
-     *      This is a candidate city to add
+     * Adds a city; throws if already present.
+     * @param city city to add
+     * @throws IllegalArgumentException if city already exists
      */
     public void add(City city) {
-        if (cities.contains(city)) {
-            throw new IllegalArgumentException();
+        if (hasCity(city)) {
+            throw new IllegalArgumentException("City already exists: " + city.getCityName());
         }
         cities.add(city);
     }
 
     /**
-     * This returns a sorted list of cities
-     * @return
-     *      Return the sorted list
+     * Returns true if the list contains the given city.
+     * @param city city to check
+     * @return presence flag
+     */
+    public boolean hasCity(City city) {
+        return cities.contains(city);
+    }
+
+    /**
+     * Removes the given city if present; throws otherwise.
+     * @param city city to remove
+     * @throws IllegalArgumentException if city not found
+     */
+    public void delete(City city) {
+        boolean removed = cities.remove(city);
+        if (!removed) {
+            throw new IllegalArgumentException("City not found: " + city.getCityName());
+        }
+    }
+
+    /**
+     * Returns a sorted copy of the cities by natural order.
+     * @return sorted list
      */
     public List<City> getCities() {
-        List<City> list = cities;
-        Collections.sort(list);
-        return list;
+        List<City> copy = new ArrayList<>(cities);
+        Collections.sort(copy);
+        return copy;
+    }
+
+    /**
+     * Returns how many cities are in the list.
+     * @return count
+     */
+    public int countCities() {
+        return cities.size();
     }
 }

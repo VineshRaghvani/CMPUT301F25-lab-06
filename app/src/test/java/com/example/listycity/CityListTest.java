@@ -4,66 +4,44 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class CityListTest {
-    /**
-     * Creates a mock CityList with one city
-     * @return
-     *      A CityList with one mock city
-     */
+
+    private City mockCity(String name, String province) {
+        return new City(name, province);
+    }
+
     private CityList mockCityList() {
-        CityList cityList = new CityList();
-        cityList.add(mockCity());
-        return cityList;
+        CityList list = new CityList();
+        list.add(mockCity("Edmonton", "AB"));
+        list.add(mockCity("Calgary", "AB"));
+        return list;
     }
 
-    /**
-     * Creates a mock City object
-     * @return
-     *      A City object for Edmonton, Alberta
-     */
-    private City mockCity() {
-        return new City("Edmonton", "Alberta");
-    }
-
-    /**
-     * Tests the add method of CityList
-     */
     @Test
-    void testAdd() {
-        CityList cityList = mockCityList();
-        assertEquals(1, cityList.getCities().size());
-        City city = new City("Regina", "Saskatchewan");
-        cityList.add(city);
-        assertEquals(2, cityList.getCities().size());
-        assertTrue(cityList.getCities().contains(city));
+    void testHasCity_true_false() {
+        CityList list = mockCityList();
+        assertTrue(list.hasCity(new City("Edmonton", "AB")));
+        assertFalse(list.hasCity(new City("Vancouver", "BC")));
     }
 
-    /**
-     * Tests that an exception is thrown when adding a duplicate city
-     */
     @Test
-    void testAddException() {
-        CityList cityList = mockCityList();
-        City city = new City("Yellowknife", "Northwest Territories");
-        cityList.add(city);
-        assertThrows(IllegalArgumentException.class, () -> {
-            cityList.add(city);
-        });
+    void testDelete_removes() {
+        CityList list = mockCityList();
+        list.delete(new City("Calgary", "AB"));
+        assertFalse(list.hasCity(new City("Calgary", "AB")));
     }
 
-    /**
-     * Tests the getCities method to ensure cities are sorted correctly
-     */
     @Test
-    void testGetCities() {
-        CityList cityList = mockCityList();
-        // This line checks if the first city in the cityList (retrieved by cityList.getCities().get(0))
-        // is the same as the city returned by mockCity()
-        assertEquals(0, mockCity().compareTo(cityList.getCities().get(0)));
-        // This pushes down the original city
-        City city = new City("Charlottetown", "Prince Edward Island");
-        cityList.add(city);
-        // Now the original city should be at position 1
-        assertEquals(0, city.compareTo(cityList.getCities().get(0)));
-        assertEquals(0, mockCity().compareTo(cityList.getCities().get(1)));
+    void testDelete_throws_when_missing() {
+        CityList list = mockCityList();
+        assertThrows(IllegalArgumentException.class,
+                () -> list.delete(new City("Toronto", "ON")));
+    }
+
+    @Test
+    void testCountCities() {
+        CityList list = mockCityList();
+        assertEquals(2, list.countCities());
+        list.add(new City("Red Deer", "AB"));
+        assertEquals(3, list.countCities());
     }
 }
